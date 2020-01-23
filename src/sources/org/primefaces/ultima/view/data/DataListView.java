@@ -56,8 +56,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.ultima.domain.CreditCard;
@@ -104,8 +102,7 @@ public class DataListView implements Serializable {
     
     
     private String messages = null;
-    HttpServletRequest request= null;
-    HttpSession session = null;
+
     
     @ManagedProperty("#{creditCardService}")
     private CreditCardService service;
@@ -115,11 +112,12 @@ public class DataListView implements Serializable {
         utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
         personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
         requestEJB = (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
-        request= (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        session = request.getSession();      
-        cards = (List<CreditCard>) session.getAttribute("cards");
-        solicitude = (Solicitude) session.getAttribute("solicitude");
-        requestPersonId = (Long) session.getAttribute("requestPersonId");
+        solicitude = (Solicitude) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("solicitude");
+        requestPersonId = (Long) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("requestPersonId");
+        cards = (List<CreditCard>)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("cards");
+        //cards = (List<CreditCard>) session.getAttribute("cards");
+        //solicitude = (Solicitude) session.getAttribute("solicitude");
+        //requestPersonId = (Long) session.getAttribute("requestPersonId");
         EJBRequest request = new EJBRequest();
         request.setParam(2);
         try {
@@ -606,7 +604,8 @@ public class DataListView implements Serializable {
                     profession.getName(), addCreditCard.getEmail(), addCreditCard.getPhoneNumber(), state.getName(), zipZone.getName(), zipZone.getName());
 
             cards.add(addCreditCard);
-            session.setAttribute("cards", cards);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("cards", cards);
+            //session.setAttribute("cards", cards);
             messages = "Se agrego la solicitud de tarjeta complementaria para " + addCreditCard.name + " " + addCreditCard.lastName + " ha sido guardado con exito";
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(messages));

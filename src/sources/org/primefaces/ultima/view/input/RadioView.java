@@ -50,8 +50,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import org.primefaces.ultima.domain.Solicitude;
 
@@ -62,8 +60,6 @@ public class RadioView {
     private UtilsEJB utilsEJB;
     private PersonEJB personEJB;
     private RequestEJB requestEJB;
-    HttpServletRequest request= null;
-    HttpSession session = null;
     private Country countryDocument;
     private Country country;
     private State state;
@@ -92,9 +88,6 @@ public class RadioView {
             utilsEJB = (UtilsEJB) EJBServiceLocator.getInstance().get(EjbConstants.UTILS_EJB);
             personEJB = (PersonEJB) EJBServiceLocator.getInstance().get(EjbConstants.PERSON_EJB);
             requestEJB= (RequestEJB) EJBServiceLocator.getInstance().get(EjbConstants.REQUEST_EJB);
-            request= (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            session = request.getSession();
-            session.removeAttribute("solicitude");
             solicitude = new Solicitude();
             solicitude.genders = new ArrayList<String>();
             solicitude.genders.add("Masculino");
@@ -103,7 +96,6 @@ public class RadioView {
             request.setParam(2);
             country = utilsEJB.loadCountry(request);
             countryDocument = utilsEJB.loadCountry(request);
-            session.removeAttribute("solicitude");
         } catch (RegisterNotFoundException ex) {
             Logger.getLogger(RadioView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NullParameterException ex) {
@@ -535,8 +527,11 @@ public class RadioView {
             solicitude.setStreetType(streetType);
             solicitude.setProfession(profession.getName());
             solicitude.setPostalCode(zipZone.getName());
-            session.setAttribute("solicitude", solicitude);
-            session.setAttribute("requestPersonId", requestPersonId);    
+
+            FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("solicitude", solicitude);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("requestPersonId", requestPersonId);
+            
             FacesContext.getCurrentInstance().getExternalContext().redirect("cards.xhtml");
         } catch (RegisterNotFoundException ex) {
             System.out.println("com.alodiga.primefaces.ultima.controller.StoreController.doRediret()");
