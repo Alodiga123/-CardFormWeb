@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Misc</ui:define>
+
+    <ui:define name="content">
+        <script type="text/javascript">
+            function start() {
+                PF('startButton1').disable();
+
+                window['progress'] = setInterval(function () {
+                    var pbClient = PF('pbClient'),
+                            oldValue = pbClient.getValue(),
+                            newValue = oldValue + 10;
+
+                    pbClient.setValue(pbClient.getValue() + 10);
+
+                    if (newValue === 100) {
+                        clearInterval(window['progress']);
+                    }
+
+
+                }, 1000);
+            }
+
+            function cancel() {
+                clearInterval(window['progress']);
+                PF('pbClient').setValue(0);
+                PF('startButton1').enable();
+            }
+
+        </script>
+        
+        <h:form>
+            <div class="ui-g">
+                 <separator/>
+                         <separator/>
+                         <separator/>
+                         <separator/>
+                         <div class="ui-g-12 ui-md-4">
+                <div align="center">            
+                 <h1 style="color: #ee2d63;"> Solicitar tu tarjeta Nuestra Visión</h1>
+                </div>
+                      </div>
+                 <separator/>
+                         <separator/>
+                                             
+ <div class="ui-g-12 ui-md-4">
+                <div align="center">   
+                 <p:graphicImage name="demo/images/tarjeta_vision.png" alt="Nuestra Vision" width="350" height="200" />
+                </div>
+                 <separator/>
+                 <separator/>
+                 </div>
+              <div align="center">            
+                 <h1 style="color: #ee2d63;"> es muy fácil</h1>
+                </div>
+                 <separator/>
+                 <separator/>
+                <div id="features" align="center">            
+                 <h1 style="color: #ee2d63;"> Solo tienes que llenar los siguientes datos</h1>
+                </div>
+                 <separator/>
+                         <separator/>
+                <div id="features" align="center">  
+                    <h:commandLink action="#{radioView.doRediretIndex()}">
+                 <p:graphicImage name="demo/images/boton_link.jpg"  width="400" height="50" />
+                 </h:commandLink>
+                </div>
+            </div>
+        </h:form>    
+    </ui:define>
+
+</ui:composition>

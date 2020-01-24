@@ -558,4 +558,12 @@ public class RadioView {
         }
     }
     
+     public void doRediretIndex() {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("formCardData.xhtml");
+        } catch (IOException ex) {
+            System.out.println("com.alodiga.primefaces.ultima.controller.StoreController.doRediret()");
+        }
+    }
+    
 }
